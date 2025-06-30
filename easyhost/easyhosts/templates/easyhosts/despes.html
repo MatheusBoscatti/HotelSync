@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Despesas | Easy Host</title>
+  <link rel="stylesheet" href="{% static 'despes.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile">
+        <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+        <p class="name">{{ request.session.user_name }}</p>
+      </div>
+      <p class="menu-title">MENU PRINCIPAL</p>
+        <nav class="menu">
+      <ul>
+          <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+          <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+          <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li> 
+          <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+          <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+          <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+          <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+          <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+          <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+          <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li> 
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="logo-container">
+          <img src="{% static 'images/logosemfundo2.png' %}" alt="EasyHost logo" class="logo" />
+          <span class="app-name">Easy Host</span>
+        </div>
+      </header>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <span>Home</span> / <span class="current">Despesas</span>
+      </div>
+
+      <!-- Search and Add Button -->
+      <div class="toolbar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Buscar Recebimento..." />
+        </div>
+        <button id="openModalBtn" class="btn blue"><i class="fas fa-plus"></i> Nova Despesa</button>
+      </div>
+
+      <!-- TABELA QUE EXIBI OS DADOS -->
+      <div class="table-wrapper">
+        <div class="table-actions">
+          <button class="btn"><i class="fas fa-download"></i> Baixar Tabela</button>
+          <button class="btn"><i class="fas fa-file-export"></i> Exporta Tabela</button>
+        </div>
+
+        <table class="guest-table">
+        <thead>
+            <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Tipo de Despesa</th>
+            <th>Forma de Pagamento</th>
+            <th>Responsavel</th>
+            <th>Valor (R$)</th>
+            <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in despes %}
+          <tr>
+            <td>{{ r.data|date:"d/m/Y" }}</td>
+            <td>{{ r.descricao }}</td>
+            <td>{{ r.tipo }}</td>
+            <td>{{ r.forma_pagamento }}</td>
+            <td>{{ r.responsavel }}</td>
+            <td>R$ {{ r.valor }}</td>
+            <td>
+              <button class="btn small blue consultar-btn" data-id="{{ reserva.id }}">
+                  <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                  Excluir
+                </button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">Nenhum recebimento encontrado.</td></tr>
+          {% endfor %}
+        </tbody>
+        </table>
+
+
+
+        <div class="pagination">Página 1 ▸</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL PARA FAZER O CADASTRO  -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>Nova Despesa</h2>
+    <form>
+      <label>Data:</label>
+      <input type="date" required>
+
+      <label>Descrição:</label>
+      <textarea rows="3" placeholder="Detalhe a Despesa..." required></textarea>
+
+      <label>Tipo de Despesa:</label>
+      <select required>
+        <option value="">Selecione</option>
+        <option value="Folha de Pagamento">Folha de Pagamento</option>
+        <option value="Contas">Contas (Luz, Água, Internet)</option>
+        <option value="Suprimentos e Limpeza">Suprimentos e Limpeza</option>
+        <option value="Manutenção e Reparos">Manutenção e Reparos</option>
+        <option value="Impostos e Taxas">Impostos e Taxas</option>
+        <option value="Equipamentos e Móveis">Equipamentos e Móveis</option>
+        <option value="Serviços Terceirizados">Serviços Terceirizados</option>
+        <option value="Deslocamentos e Transporte">Deslocamentos e Transporte</option>
+        <option value="Multas e Encargos">Multas e Encargos</option>
+        <option value="Outros">Outros</option>
+      </select>
+
+      <label>Forma de Pagamento:</label>
+      <select required>
+        <option value="">Selecione</option>
+        <option>Dinheiro</option>
+        <option>Cartão de Crédito</option>
+        <option>Cartão de Débito</option>
+        <option>Pix</option>
+        <option>Transferência Bancária</option>
+        <option>Boleto</option>
+        <option>Outros</option>
+      </select>
+      <label>Nome do Responsavel:</label>  
+      <input type="text" name="responsavel" placeholder="Responsável" required>
+
+
+      <label>Valor (R$):</label>
+      <input type="number" step="0.01" placeholder="0,00" required>
+
+      <button type="submit" class="btn blue">Salvar</button>
+    </form>
+  </div>
+</div>
+
+  
+
+<script>
+  const modal = document.getElementById("modal");
+  const openBtn = document.getElementById("openModalBtn");
+  const closeBtn = document.querySelector(".close-btn");
+  const form = document.querySelector(".modal-content form");
+
+  openBtn.addEventListener("click", () => {
+    modal.style.display = "block";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = {
+      data: form.querySelector('input[type="date"]').value,
+      descricao: form.querySelector('textarea').value,
+      tipo: form.querySelectorAll('select')[0].value,
+      forma_pagamento: form.querySelectorAll('select')[1].value,
+      responsavel: form.querySelector('input[name="responsavel"]').value,
+      valor: parseFloat(form.querySelector('input[type="number"]').value),
+    };
+
+    try {
+      const response = await fetch("{% url 'criar_despesa' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": '{{ csrf_token }}'
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      if (result.status === "success") {
+        alert("Despesa cadastrada com sucesso!");
+        location.reload(); // recarrega a página para atualizar a tabela
+      } else {
+        alert("Erro: " + result.message);
+      }
+    } catch (error) {
+      alert("Erro ao salvar: " + error);
+    }
+  });
+</script>
+
+  
+</body>
+</html>

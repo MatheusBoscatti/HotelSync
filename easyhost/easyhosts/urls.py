@@ -1,0 +1,36 @@
+from django.urls import path
+from django.views.generic.base import RedirectView
+from . import views
+
+urlpatterns = [
+    path('', RedirectView.as_view(url='/login/', permanent=True)),
+    path('index/', views.index, name='index'),
+    path('relato/', views.relato, name='relato'),
+    path('politicas/', views.politicas, name='politicas'),
+    path('suporte/', views.suporte, name='suporte'),
+    path('configuracao/', views.configuracao, name='configuracao'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    path('checkin/', views.checkin_view, name='checkin'),
+    path('checkin/criar/', views.criar_checkin, name='criar_checkin'),
+    path('checkin/buscar/', views.buscar_checkins, name='buscar_checkins'),
+    path('get_reserva/<int:reserva_id>/', views.get_reserva, name='get_reserva'),
+    path('update_reserva/<int:reserva_id>/', views.update_reserva, name='update_reserva'),
+    path('hospedes/', views.hospedes_view, name='hospedes'),
+    path('criar_hospede/', views.criar_hospede, name='criar_hospede'),
+    path('buscar_hospedes/', views.buscar_hospedes, name='buscar_hospedes'),
+    path('get_hospede/<int:hospede_id>/', views.get_hospede, name='get_hospede'),
+    path('update_hospede/<int:hospede_id>/', views.update_hospede, name='update_hospede'),    
+    path('quartos/', views.quartos_view, name='quartos'),
+    path('quartos/cadastrar/', views.criar_quarto, name='criar_quarto'),
+    path('transfer/', views.transfer_view, name='transfer'),
+    path('despes/', views.despes_view, name='despes'),
+    path('criar_receita/', views.criar_receita, name='criar_receita'),
+    path('criar_despesa/', views.criar_despesa, name='criar_despesa'),
+    path('exibir_graficos/', views.exibir_graficos, name='exibir_graficos'),
+    path('relato/', views.relato, name='relato'),
+    path('cd2/', views.cd2, name='cd2'),
+    path('relato/criar', views.criar_relatorio, name='criar_relatorio'),
+    path('relato/baixar/<int:relatorio_id>/', views.baixar_relatorio, name='baixar_relatorio'),
+    path('relato/excluir/<int:relatorio_id>/', views.excluir_relatorio, name='excluir_relatorio'),
+]

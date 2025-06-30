@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Políticas de Uso e Privacidade - Sistema Hoteleiro</title>
+   <link rel="stylesheet" href="{% static 'politica.css' %}" />
+</head>
+<body>
+  <div class="politica-container" id="conteudo-pdf">
+    <h1>Política de Privacidade e Termos de Uso</h1>
+
+    <p>Bem-vindo ao nosso sistema de gestão hoteleira. A sua privacidade é importante para nós. Esta política descreve como coletamos, usamos, armazenamos, protegemos e tratamos os dados pessoais dos usuários.</p>
+
+    <h2>1. Coleta de Dados</h2>
+    <p>Coletamos informações fornecidas pelo usuário durante o cadastro e utilização do sistema, incluindo: nome, CPF, CNPJ, e-mail, telefone, dados de hospedagem, dados de pagamento e preferências operacionais.</p>
+
+    <h2>2. Finalidade do Tratamento</h2>
+    <ul>
+      <li>Gerenciar reservas, check-in e check-out;</li>
+      <li>Emitir relatórios e faturas;</li>
+      <li>Melhorar o funcionamento do sistema;</li>
+      <li>Personalizar a experiência do usuário;</li>
+      <li>Realizar contato e suporte;</li>
+      <li>Cumprir obrigações legais e fiscais.</li>
+    </ul>
+
+    <h2>3. Uso de Cookies</h2>
+    <p>Utilizamos cookies para manter sessões ativas, armazenar preferências e analisar estatísticas de uso. O usuário pode desativar os cookies nas configurações do navegador, embora isso possa afetar a funcionalidade do sistema.</p>
+
+    <h2>4. Armazenamento e Segurança</h2>
+    <p>Seus dados são armazenados de forma segura em servidores com tecnologia de proteção, criptografia e controle de acesso. Adotamos medidas para garantir a confidencialidade e integridade das informações.</p>
+
+    <h2>5. Retenção de Dados</h2>
+    <p>Os dados são mantidos pelo tempo necessário ao cumprimento das finalidades descritas ou conforme exigido por leis fiscais, civis ou comerciais. Após esse prazo, serão eliminados ou anonimizados.</p>
+
+    <h2>6. Compartilhamento de Informações</h2>
+    <p>Não compartilhamos dados pessoais com terceiros, salvo em casos de exigência legal, auditoria ou integração voluntária com plataformas de pagamento ou contabilidade, autorizadas pelo usuário.</p>
+
+    <h2>7. Direitos do Usuário (LGPD)</h2>
+    <ul>
+      <li>Confirmar a existência de tratamento de dados;</li>
+      <li>Solicitar acesso, correção ou exclusão de seus dados;</li>
+      <li>Revogar consentimento a qualquer momento;</li>
+      <li>Solicitar portabilidade para outro serviço;</li>
+      <li>Reclamar junto à autoridade nacional (ANPD).</li>
+    </ul>
+
+    <h2>8. Responsabilidades do Usuário</h2>
+    <ul>
+      <li>Fornecer informações verdadeiras e completas;</li>
+      <li>Não compartilhar sua senha ou acesso com terceiros;</li>
+      <li>Utilizar o sistema apenas para fins legais;</li>
+      <li>Respeitar a privacidade de outros usuários e hóspedes.</li>
+    </ul>
+
+    <h2>9. Atualizações desta Política</h2>
+    <p>Esta política pode ser modificada a qualquer momento. Recomendamos que o usuário a revise periodicamente. Notificações serão enviadas em caso de alterações significativas.</p>
+
+    <h2>10. Contato</h2>
+    <p>Em caso de dúvidas, solicitações ou problemas relacionados ao tratamento de dados, entre em contato pelo e-mail: <a href="mailto:suporte@sistemahotel.com">suporte@sistemahotel.com</a></p>
+  </div>
+
+  <div class="botoes-acao">
+
+    <button class="btn-pdf" onclick="gerarPDF()">Baixar em PDF</button>
+    <a class="btn-voltar" href="cadastro.html">Voltar</a>
+  </div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function gerarPDF() {
+    const element = document.getElementById("conteudo-pdf");
+
+    const opt = {
+      margin:       [0.5, 0.5, 0.5, 0.5],
+      filename:     'politica-privacidade.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  {
+        scale: 2,
+        useCORS: true,
+        scrollY: 0
+      },
+      jsPDF: {
+        unit: 'in',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: {
+        mode: ['avoid-all', 'css', 'legacy']
+      }
+    };
+
+    html2pdf().set(opt).from(element).save();
+  }
+</script>
+
+</body>
+</html>

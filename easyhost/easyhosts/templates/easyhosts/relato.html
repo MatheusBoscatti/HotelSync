@@ -1,0 +1,319 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório | Easy Host</title>
+    <link rel="stylesheet" href="{% static 'rel.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+     <!-- ADICIONAR JQUERY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+                <p class="name">{{ request.session.user_name }}</p>
+            </div>
+            <p class="menu-title">MENU PRINCIPAL</p>
+            <nav class="menu">
+            <ul>
+                <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+                <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+                <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li> 
+                <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+                <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+                <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+                <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+                <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+                <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+                <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+                <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li> 
+            </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="logo-container">
+                    <img src="{% static 'images/logosemfundo2.png' %}" alt="EasyHost logo" class="logo" />
+                    <span class="app-name">Easy Host</span>
+                </div>
+            </header>
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                <span>Home</span> / <span class="current">Relatório</span>
+            </div>
+
+            <!-- Search and Add Button -->
+            <div class="toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar Recebimento..." />
+                </div>
+                <button id="openModalBtn" class="btn blue"><i class="fas fa-plus"></i> Novo Relatório</button>
+            </div>
+
+            <!-- Tabela de Relatórios -->
+            <!-- Tabela de Relatórios -->
+            <div class="table-wrapper">
+                <div class="table-actions">
+                    <button class="btn" id="exportExcelBtn">
+                        <i class="fas fa-file-excel"></i> Exportar para Excel
+                    </button>
+                    <button class="btn" id="exportPdfBtn">
+                        <i class="fas fa-file-pdf"></i> Exportar para PDF
+                    </button>
+                </div>
+
+                <table class="report-table guest-table" id="reportsTable">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Responsável</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for relatorio in relatorios %}
+                        <tr>
+                            <td>{{ relatorio.data_criacao|date:"d/m/Y" }}</td>
+                            <td>{{ relatorio.nome }}</td>
+                            <td>{{ relatorio.get_tipo_display }}</td>
+                            <td>{{ relatorio.descricao|truncatechars:50 }}</td>
+                            <td>{{ relatorio.responsavel }}</td>
+                            <td class="actions">
+                                {% if relatorio.arquivo %}
+                                <button href="{% url 'baixar_relatorio' relatorio.id %}" class="btn btn-secondary" title="Baixar">
+                                    <i class="fas fa-download"></i>Baixar arquivo
+                                </button>
+                                {% endif %}
+                                <button class="btn small blue view-btn" data-id="{{ relatorio.id }}" title="Visualizar">
+                                     <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger delete-btn" data-id="{{ relatorio.id }}" title="Excluir">
+                                     <i class="fa fa-trash" aria-hidden="true"></i>Excluir
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="no-data">Nenhum relatório encontrado</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    Página 1 ▸
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- Modal de Novo Relatório -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Adicionar Relatório</h2>
+            <!-- ADICIONAR method="POST" para fallback -->
+            <form id="relatorioForm" method="POST" action="{% url 'criar_relatorio' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Data:</label>
+                    <input type="date" name="data_criacao" id="data_criacao" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nome:</label>
+                    <input type="text" name="nome" placeholder="Nome do relatório" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tipo:</label>
+                    <select name="tipo" required>
+                        <option value="" disabled selected>Selecione o tipo</option>
+                        <option value="financeiro">Financeiro</option>
+                        <option value="operacional">Operacional</option>
+                        <option value="hospedes">Hóspedes</option>
+                        <option value="manutencao">Manutenção</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descrição:</label>
+                    <textarea name="descricao" rows="3" placeholder="Descreva o conteúdo do relatório..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Responsável:</label>
+                    <input type="text" name="responsavel" placeholder="Nome do responsável" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Observações:</label>
+                    <textarea name="observacoes" rows="3" placeholder="Observações adicionais..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Arquivo (opcional):</label>
+                    <input type="file" name="arquivo" id="arquivoInput">
+                    <small>Apenas arquivos PDF, DOCX ou XLSX (máx. 5MB)</small>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn gray" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn blue">Salvar Relatório</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Variáveis globais
+            let currentRelatorioId = null;
+            
+            // Abrir modal de novo relatório
+            $('#openModalBtn').click(function() {
+                $('#modal').css('display', 'block');
+                // Definir data atual como padrão
+                const today = new Date().toISOString().split('T')[0];
+                $('#data_criacao').val(today);
+            });
+            
+            // Fechar modais
+            $('.close-btn, #cancelBtn').click(function() {
+                $('#modal, #viewModal, #confirmModal').css('display', 'none');
+            });
+            
+            // Fechar ao clicar fora
+            $(window).click(function(e) {
+                if ($(e.target).hasClass('modal')) {
+                    $('#modal, #viewModal, #confirmModal').css('display', 'none');
+                }
+            });
+            
+            // CORRIGIR: Enviar formulário de relatório
+            $('#relatorioForm').submit(function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                $.ajax({
+                    url: "{% url 'criar_relatorio' %}",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    success: function(response) {
+                        console.log('Resposta:', response);
+                        if (response.status === 'success') {
+                            alert('Relatório criado com sucesso!');
+                            $('#modal').css('display', 'none');
+                            location.reload();
+                        } else {
+                            alert('Erro: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro Ajax:', xhr.responseText);
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            alert('Erro: ' + response.message);
+                        } catch (e) {
+                            alert('Erro ao enviar o formulário. Tente novamente.');
+                        }
+                    }
+                });
+            });
+            
+            // Visualizar relatório
+            $('.view-btn').click(function() {
+                const relatorioId = $(this).data('id');
+                
+                // Aqui você faria uma requisição AJAX para buscar os detalhes
+                $('#viewData').text('26/06/2025');
+                $('#viewNome').text('Relatório Financeiro Mensal');
+                $('#viewTipo').text('Financeiro');
+                $('#viewResponsavel').text('João Silva');
+                $('#viewDescricao').text('Relatório completo das receitas e despesas do mês de junho/2025.');
+                $('#viewObservacoes').text('Observar o aumento nas despesas com manutenção.');
+                $('#viewArquivoLink').attr('href', '#');
+                
+                $('#viewModal').css('display', 'block');
+            });
+            
+            // Excluir relatório
+            $('.delete-btn').click(function() {
+                currentRelatorioId = $(this).data('id');
+                $('#confirmModal').css('display', 'block');
+            });
+            
+            $('#confirmDeleteBtn').click(function() {
+                if (currentRelatorioId) {
+                    $.ajax({
+                        url: `/relato/excluir/${currentRelatorioId}/`,
+                        type: 'POST',
+                        data: {
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                alert('Relatório excluído com sucesso!');
+                                $('#confirmModal').css('display', 'none');
+                                location.reload();
+                            } else {
+                                alert('Erro: ' + response.message);
+                            }
+                        },
+                        error: function() {
+                            alert('Erro ao excluir o relatório.');
+                        }
+                    });
+                }
+            });
+            
+            // Busca em tempo real
+            $('#searchInput').keyup(function() {
+                const searchText = $(this).val().toLowerCase();
+                
+                $('#reportsTable tbody tr').each(function() {
+                    const rowText = $(this).text().toLowerCase();
+                    $(this).toggle(rowText.indexOf(searchText) > -1);
+                });
+            });
+            
+            // Exportar para Excel
+            $('#exportExcelBtn').click(function() {
+                alert('Exportando para Excel...');
+            });
+            
+            // Exportar para PDF
+            $('#exportPdfBtn').click(function() {
+                alert('Exportando para PDF...');
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,358 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #d6d6d6;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background-color: #084F6D;
+    color: white;
+    padding: 20px 15px;
+  }
+  
+  .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+
+  }
+  
+  .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid rgb(71, 238, 33);
+  }
+  
+  .name {
+    font-weight: bold;
+  }
+  
+  .menu-title {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: #cce;
+  }
+  
+  .menu ul {
+    list-style: none;
+  }
+  
+  .menu li {
+    padding: 12px 20px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .menu li i {
+    margin-right: 10px;
+    width: 20px;
+  }
+  
+  .menu li:hover {
+    background-color: #0e6386;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Top Bar */
+  .topbar {
+    background-color: #f3f3f3;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .logo {
+    height: 32px;
+  }
+  
+  .app-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #084F6D; /* Azul consistente com a identidade visual */
+  }
+  
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+  padding: 40px 20px;
+}
+
+.modal-content {
+  background-color: #fff;
+  max-width: 400px;
+  width: 100%;
+  margin: auto;
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+  animation: slideDown 0.4s ease forwards;
+}
+  
+  .modal-content select {
+     padding: 6px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px; /* controla a largura dos inputs */
+    margin: 0 auto;
+  }
+  
+ .modal-content h2 {
+  margin-bottom: 20px;
+  color: #084F6D;
+  font-weight: 700;
+  font-size: 22px;
+}
+  
+ .modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content input,
+.modal-content select {
+  padding: 12px 15px;
+  font-size: 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  border-color: #084F6D;
+  outline: none;
+  box-shadow: 0 0 8px rgba(8, 79, 109, 0.3);
+}
+  
+
+ .modal-content button {
+  background-color: #084F6D;
+  color: white;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.modal-content button:hover {
+  background-color: #063a50;
+}
+
+.close-btn {
+  position: absolute;
+  right: 20px;
+  top: 18px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #084F6D;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  height: 30px;
+}
+
+.app-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #084F6D;
+}
+
+/* Header e search */
+.header-bar {
+  padding: 20px 30px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.breadcrumb {
+    padding: 20px 30px 10px;
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .breadcrumb .current {
+    font-weight: bold;
+    color: #084F6D;
+  }
+
+.search-add {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+}
+
+.search-box {
+  position: relative;
+  width: 300px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 35px 8px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.search-box i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+}
+
+.add-btn {
+  background-color: #084F6D;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Cards de quartos */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px 30px;
+}
+
+.card {
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-body {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.card-footer {
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #ccc;
+}
+
+.card.ocupado .card-header {
+  background-color: red;
+}
+
+.card.disponivel .card-header {
+  background-color: green;
+}
+
+.edit-icon {
+  color: #ddd;
+  cursor: pointer;
+}
+
+.btn-hospedar {
+  background-color: #555;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-informa {
+  background-color: #084F6D;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Paginação */
+.pagination {
+  text-align: center;
+  padding-bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+ .menu a {
+    color: white;
+    text-decoration: none;
+}

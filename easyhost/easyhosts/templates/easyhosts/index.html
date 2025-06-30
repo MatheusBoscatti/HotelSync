@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Easy Host</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile">
+        <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+        <p class="name">{{ request.session.user_name }}</p>
+      </div>
+      <p class="menu-title">MENU PRINCIPAL</p>
+       <nav class="menu">
+        <ul>
+          <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+          <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+          <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li> 
+          <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+          <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+          <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+          <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+          <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+          <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+          <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li> 
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="logo-container">
+          <img src="{% static 'images/logosemfundo2.png' %}" alt="EasyHost logo" class="logo" />
+          <span class="app-name">Easy Host</span>
+        </div>
+      </header>
+
+      <section class="welcome-section">
+        <img src="{% static 'images/imagelogin.png' %}" alt="Usuário" class="welcome-avatar" />
+        <p class="welcome-text">
+          Bem-vindo {{ request.session.user_name }} ao Easy Host! Aproveite todas as funcionalidades disponíveis e tenha uma ótima experiência. Caso precise de ajuda, nossa equipe está à disposição.
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

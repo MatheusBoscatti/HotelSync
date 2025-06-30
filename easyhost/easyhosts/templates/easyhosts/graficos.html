@@ -1,0 +1,340 @@
+{% load static %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="{% static 'graficos.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="profile">
+                <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+                <p class="name">{{ request.session.user_name }}</p>
+            </div>
+            <p class="menu-title">MENU PRINCIPAL</p>
+            <nav class="menu">
+                <ul>
+                    <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+                    <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+                    <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li>
+                    <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+                    <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+                    <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+                    <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+                    <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+                    <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+                    <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <h1 class="mb-4">Gráficos Financeiros</h1>
+
+            <div class="container">
+                <div class="row g-4"> <!-- Adicione 'g-4' para gap entre colunas -->
+                    <div class="col-lg-6"> <!-- Corrigi de col-lg-1 para col-lg-6 -->
+                        <div class="card h-100"> <!-- Adicionei h-100 para altura uniforme -->
+                            <div class="card-header">
+                                <h4>Receitas e Despesas por Mês</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="monthlyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6"> <!-- Corrigi de col-lg-1 para col-lg-6 -->
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4>Tipos de Receita</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="revenueTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 g-4"> <!-- Adicione 'g-4' aqui também -->
+                    <div class="col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4>Tipos de Despesa</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="expenseTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h4>Lucro Mensal</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="profitChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Inclua Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Converter dados do Django para JavaScript
+            const receitasMensais = JSON.parse('{{ receitas_mensais|escapejs }}');
+            const despesasMensais = JSON.parse('{{ despesas_mensais|escapejs }}');
+            const receitasPorTipo = JSON.parse('{{ receitas_por_tipo|escapejs }}');
+            const despesasPorTipo = JSON.parse('{{ despesas_por_tipo|escapejs }}');
+
+            // Processar dados mensais
+            const allMonths = [];
+            const monthlyRevenues = [];
+            const monthlyExpenses = [];
+
+            // Criar array com todos os meses presentes nos dados
+            receitasMensais.forEach(item => {
+                const month = new Date(item.month);
+                const monthStr = moment(month).format('MMM/YY');
+                if (!allMonths.includes(monthStr)) {
+                    allMonths.push(monthStr);
+                }
+            });
+
+            despesasMensais.forEach(item => {
+                const month = new Date(item.month);
+                const monthStr = moment(month).format('MMM/YY');
+                if (!allMonths.includes(monthStr)) {
+                    allMonths.push(monthStr);
+                }
+            });
+
+            // Ordenar meses cronologicamente
+            allMonths.sort((a, b) => {
+                return moment(a, 'MMM/YY') - moment(b, 'MMM/YY');
+            });
+
+            // Preencher receitas e despesas por mês
+            allMonths.forEach(monthStr => {
+                const monthKey = moment(monthStr, 'MMM/YY').format('YYYY-MM');
+
+                // Encontrar receita para este mês
+                const receita = receitasMensais.find(item => {
+                    const itemMonth = new Date(item.month);
+                    return moment(itemMonth).format('YYYY-MM') === monthKey;
+                });
+                monthlyRevenues.push(receita ? parseFloat(receita.total) : 0);
+
+                // Encontrar despesa para este mês
+                const despesa = despesasMensais.find(item => {
+                    const itemMonth = new Date(item.month);
+                    return moment(itemMonth).format('YYYY-MM') === monthKey;
+                });
+                monthlyExpenses.push(despesa ? parseFloat(despesa.total) : 0);
+            });
+
+            // Processar dados por tipo
+            const revenueTypeLabels = receitasPorTipo.map(item => item.tipo);
+            const revenueTypeData = receitasPorTipo.map(item => parseFloat(item.total));
+
+            const expenseTypeLabels = despesasPorTipo.map(item => item.tipo);
+            const expenseTypeData = despesasPorTipo.map(item => parseFloat(item.total));
+
+            // 1. Gráfico de Receitas e Despesas por Mês
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: allMonths,
+                    datasets: [
+                        {
+                            label: 'Receitas',
+                            data: monthlyRevenues,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Despesas',
+                            data: monthlyExpenses,
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Valor (R$)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mês'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. Gráfico de Tipos de Receita
+            const revenueTypeCtx = document.getElementById('revenueTypeChart').getContext('2d');
+            new Chart(revenueTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: revenueTypeLabels,
+                    datasets: [{
+                        data: revenueTypeData,
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 3. Gráfico de Tipos de Despesa
+            const expenseTypeCtx = document.getElementById('expenseTypeChart').getContext('2d');
+            new Chart(expenseTypeCtx, {
+                type: 'pie',
+                data: {
+                    labels: expenseTypeLabels,
+                    datasets: [{
+                        data: expenseTypeData,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                            'rgba(255, 159, 64, 0.7)',
+                            'rgba(199, 199, 199, 0.7)',
+                            'rgba(83, 102, 255, 0.7)',
+                            'rgba(255, 99, 255, 0.7)',
+                            'rgba(140, 140, 140, 0.7)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: R$ ${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 4. Gráfico de Lucro Mensal (Receitas - Despesas)
+            const profitCtx = document.getElementById('profitChart').getContext('2d');
+            const profits = monthlyRevenues.map((rev, i) => rev - monthlyExpenses[i]);
+
+            new Chart(profitCtx, {
+                type: 'line',
+                data: {
+                    labels: allMonths,
+                    datasets: [{
+                        label: 'Lucro',
+                        data: profits,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Valor (R$)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Mês'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `Lucro: R$ ${context.raw.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    {% endblock %}

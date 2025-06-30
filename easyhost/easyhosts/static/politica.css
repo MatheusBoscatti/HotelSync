@@ -1,0 +1,139 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f1f1f1;
+  margin: 0;
+  padding: 0;
+}
+
+.politica-container {
+  max-width: 800px;
+  margin: 50px auto;
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  color: #333;
+}
+
+.politica-container h1 {
+  color: #084F6D;
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+.politica-container h2 {
+  font-size: 18px;
+  color: #084F6D;
+  margin-top: 25px;
+}
+
+.politica-container p {
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+.btn-voltar {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 10px 20px;
+  background-color: #084F6D;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.btn-voltar:hover {
+  background-color: #063a50;
+}
+
+
+.btn-pdf, .btn-voltar {
+  display: inline-block;
+  margin: 10px 10px 0 10px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-pdf {
+  background-color: #084F6D;
+  color: white;
+}
+
+.btn-pdf:hover {
+  background-color: #084F6D;
+}
+
+.btn-voltar {
+  background-color: #084F6D;
+  color: white;
+}
+
+.btn-voltar:hover {
+  background-color: #063a50;
+}
+
+
+
+
+
+
+
+.botoes-acao {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.btn-pdf, .btn-voltar {
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-pdf {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-pdf:hover {
+  background-color: #388E3C;
+}
+
+.btn-voltar {
+  background-color: #084F6D;
+  color: white;
+}
+
+.btn-voltar:hover {
+  background-color: #063a50;
+}
+
+
+@media print {
+  h2 {
+    page-break-after: avoid;
+  }
+
+  p, ul, h1 {
+    page-break-inside: avoid;
+  }
+
+  .politica-container {
+    page-break-before: auto;
+    page-break-after: auto;
+  }
+}
+
+

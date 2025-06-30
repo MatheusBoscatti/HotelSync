@@ -1,0 +1,404 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #d6d6d6;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background-color: #084F6D;
+    color: white;
+    padding: 20px 15px;
+  }
+  
+  .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+
+  }
+  
+  .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid rgb(71, 238, 33);
+  }
+  
+  .name {
+    font-weight: bold;
+  }
+  
+  .menu-title {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: #cce;
+  }
+  
+  .menu ul {
+    list-style: none;
+  }
+  
+  .menu li {
+    padding: 12px 20px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .menu li i {
+    margin-right: 10px;
+    width: 20px;
+  }
+  
+  .menu li:hover {
+    background-color: #0e6386;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Top Bar */
+  .topbar {
+    background-color: #f3f3f3;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .logo {
+    height: 32px;
+  }
+  
+  .app-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #084F6D; /* Azul consistente com a identidade visual */
+  }
+  
+
+/* Breadcrumb */
+.breadcrumb {
+  padding: 20px 30px 10px;
+  font-size: 14px;
+  color: #777;
+}
+
+.breadcrumb .current {
+  font-weight: bold;
+  color: #084F6D;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px 20px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 300px;
+}
+
+.search-box i {
+  margin-right: 8px;
+  color: #666;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* Buttons */
+.btn {
+  background-color: #e5e5e5;
+  padding: 8px 14px;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #d4d4d4;
+}
+
+.btn.blue {
+  background-color: #084F6D;
+  color: white;
+}
+
+.btn.blue:hover {
+  background-color: #063a50;
+}
+
+/* Table */
+.table-wrapper {
+  background-color: white;
+  margin: 0 30px 30px;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.guest-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  border-radius: 6px;
+}
+
+.guest-table thead {
+  background-color: #084F6D;
+  color: white;
+  text-align: left;
+}
+
+.guest-table th,
+.guest-table td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+}
+
+.guest-table tbody tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+/* Status colors */
+.green {
+  color: green;
+}
+
+.gray {
+  color: gray;
+}
+
+.yellow {
+  color: rgb(160, 144, 0);
+}
+
+.red {
+  color: red;
+}
+
+
+/* Pagination */
+.pagination {
+  text-align: right;
+  padding: 10px;
+  font-size: 13px;
+  color: #555;
+}
+
+.modal {
+  display: none; /* Escondido por padrão */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5); /* fundo escurecido */
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 25px;
+  border-radius: 8px;
+  width: 450px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+  color: #084F6D;
+  font-size: 1.5rem;
+}
+
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 1em;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+}
+
+.btn.gray {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.btn.blue {
+  background-color: #084F6D;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.modal-content input {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.close-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 22px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .table-actions {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+}
+
+ .menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 8px;
+  width: 500px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 25px;
+  color: #084F6D;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+

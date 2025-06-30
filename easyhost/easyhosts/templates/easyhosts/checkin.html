@@ -1,0 +1,478 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Easy Host</title>
+  <link rel="stylesheet" href="{% static 'checkin.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile">
+        <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+        <p class="name">{{ request.session.user_name }}</p>
+      </div>
+      <p class="menu-title">MENU PRINCIPAL</p>
+         <nav class="menu">
+       <ul>
+          <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+          <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+          <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li> 
+          <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+          <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+          <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+          <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+          <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+          <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+          <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li> 
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="logo-container">
+          <img src="{% static 'images/logosemfundo2.png' %}" alt="EasyHost logo" class="logo" />
+          <span class="app-name">Easy Host</span>
+        </div>
+      </header>
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="{% url 'index' %}">Home</a> / <span class="current">Check-in</span>
+      </div>
+
+      <!-- Search and Add Button -->
+      <div class="toolbar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-input" placeholder="Buscar Check-ins..." />
+        </div>
+        <button id="openModalBtn" class="btn blue"><i class="fas fa-plus"></i> Novo Check-in</button>
+      </div>
+
+      <!-- Hospedes Table -->
+      <div class="table-wrapper">
+        <div class="table-actions">
+          <button class="btn" id="download-table"><i class="fas fa-download"></i> Importar Tabela</button>
+          <button class="btn" id="export-table"><i class="fas fa-file-export"></i> Exportar Tabela</button>
+        </div>
+
+        <table class="guest-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Nome Completo</th>
+              <th>CPF</th>
+              <th>E-mail</th>
+              <th>Telefone</th>
+              <th>Quarto</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="checkins-table-body">
+            {% for reserva in reservas %}
+            <tr>
+              <td
+                class="{% if reserva.data_checkin|date:'d/m/Y' < today %}red{% elif reserva.data_checkin|date:'d/m/Y' == today %}yellow{% else %}green{% endif %}">
+                {{ reserva.data_checkin|date:"d/m/Y" }}
+                {% if reserva.data_checkout %}
+                <br><small>Check-out: {{ reserva.data_checkout|date:"d/m/Y" }}</small>
+                {% endif %}
+              </td>
+              <td>{{ reserva.hospede.nome_completo }}</td>
+              <td>{{ reserva.hospede.cpf|default:"-" }}</td>
+              <td>{{ reserva.hospede.email|default:"-" }}</td>
+              <td>{{ reserva.hospede.telefone }}</td>
+              <td>{{ reserva.quarto.numero_quarto }}</td>
+              <td>
+                <button class="btn small blue consultar-btn" data-id="{{ reserva.id }}">
+                  <i class="fas fa-edit"></i> Fazer Checkout
+                </button>
+                <button class="btn btn-danger">
+                  <i class="fa fa-trash" aria-hidden="true"></i>
+                  Excluir
+                </button>
+              </td> 
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="empty-table">Nenhum check-in encontrado</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="pagination">Página 1 ▸</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 id="modal-title">Novo Check-in</h2>
+        <form id="checkin-form">
+      {% csrf_token %}
+      <input type="hidden" id="reserva_id" name="reserva_id">
+      
+      <div class="form-group">
+        <label>Data de Check-in:</label>
+        <input type="date" name="data_checkin" id="data_checkin" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Data de Check-out:</label>
+        <input type="date" name="data_checkout" id="data_checkout">
+      </div>
+      
+      <div class="form-group">
+        <label>Nome Completo:</label>
+        <input type="text" name="nome_completo" id="nome_completo" placeholder="Ex: João da Silva" required>
+      </div>
+      
+      <div class="form-group">
+        <label>CPF:</label>
+        <input type="text" name="cpf" id="cpf" placeholder="000.000.000-00">
+      </div>
+      
+      <div class="form-group">
+        <label>E-mail:</label>
+        <input type="email" name="email" id="email" placeholder="exemplo@email.com">
+      </div>
+      
+      <div class="form-group">
+        <label>Telefone:</label>
+        <input type="tel" name="telefone" id="telefone" placeholder="(00) 00000-0000" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Quarto:</label>
+        <select class="form-select" name="quarto" id="quarto" required {% if reserva_id %}disabled{% endif %}>
+          <option value="" disabled selected>Selecione um quarto</option>
+          {% for quarto in quartos %}
+          <option value="{{ quarto.numero_quarto }}">{{ quarto }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Observações:</label>
+        <textarea name="observacoes" id="observacoes" placeholder="Observações adicionais..."></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn gray" id="cancelar-btn">Cancelar</button>
+        <button type="submit" class="btn blue">Salvar</button>
+      </div>
+    </form>
+    </div>
+  </div>
+
+  <script>
+    // Obter o token CSRF
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Elementos do DOM
+    const modal = document.getElementById("modal");
+    const openBtn = document.getElementById("openModalBtn");
+    const closeBtn = document.querySelector(".close-btn");
+    const cancelarBtn = document.getElementById("cancelar-btn");
+    const checkinForm = document.getElementById("checkin-form");
+    const searchInput = document.getElementById("search-input");
+    const modalTitle = document.getElementById("modal-title");
+
+    // Abrir modal para novo check-in
+    openBtn.addEventListener("click", () => {
+      modalTitle.textContent = "Novo Check-in";
+      document.getElementById('reserva_id').value = '';
+      checkinForm.reset();
+      modal.style.display = "block";
+    });
+
+    // Fechar modal
+    function fecharModal() {
+      modal.style.display = "none";
+      checkinForm.reset();
+    }
+
+    closeBtn.addEventListener("click", fecharModal);
+    cancelarBtn.addEventListener("click", fecharModal);
+
+    // Fecha o modal se clicar fora do conteúdo
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        fecharModal();
+      }
+    });
+
+    // Abrir modal para editar reserva
+    document.addEventListener('click', async (e) => {
+      if (e.target.classList.contains('consultar-btn') || e.target.closest('.consultar-btn')) {
+        const btn = e.target.classList.contains('consultar-btn') ? e.target : e.target.closest('.consultar-btn');
+        const reservaId = btn.getAttribute('data-id');
+
+        try {
+          // Buscar dados da reserva
+          const response = await fetch(`/get_reserva/${reservaId}/`, {
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Preencher o modal com os dados
+            modalTitle.textContent = "Editar Check-in";
+            document.getElementById('reserva_id').value = data.id;
+            document.getElementById('nome_completo').value = data.nome_completo;
+            document.getElementById('telefone').value = data.telefone;
+            document.getElementById('data_checkin').value = data.data_checkin;
+            document.getElementById('data_checkout').value = data.data_checkout || '';
+            document.getElementById('cpf').value = data.cpf || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('observacoes').value = data.observacoes || '';
+
+            // Configurar o select de quarto
+            const quartoSelect = document.getElementById('quarto');
+            quartoSelect.value = data.quarto;
+            quartoSelect.disabled = true;
+
+            // Adicionar uma opção oculta para manter o valor do quarto no formulário
+            if (!document.getElementById('quarto_hidden')) {
+              const hiddenInput = document.createElement('input');
+              hiddenInput.type = 'hidden';
+              hiddenInput.id = 'quarto_hidden';
+              hiddenInput.name = 'quarto';
+              hiddenInput.value = data.quarto;
+              quartoSelect.parentNode.appendChild(hiddenInput);
+            } else {
+              document.getElementById('quarto_hidden').value = data.quarto;
+            }
+
+            // Abrir modal
+            modal.style.display = "block";
+          } else {
+            alert('Erro ao carregar dados da reserva');
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          alert('Ocorreu um erro ao carregar os dados');
+        }
+      }
+    });
+
+    // Resetar o select de quarto quando abrir para novo check-in
+    openBtn.addEventListener("click", () => {
+      modalTitle.textContent = "Novo Check-in";
+      document.getElementById('reserva_id').value = '';
+      checkinForm.reset();
+
+      // Habilitar e resetar o select de quarto
+      const quartoSelect = document.getElementById('quarto');
+      quartoSelect.disabled = false;
+      quartoSelect.value = '';
+
+      // Remover o input hidden se existir
+      const hiddenInput = document.getElementById('quarto_hidden');
+      if (hiddenInput) {
+        hiddenInput.remove();
+      }
+
+      modal.style.display = "block";
+    });
+
+    // Enviar formulário de check-in/check-out
+    checkinForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const reservaId = document.getElementById('reserva_id').value;
+      const url = reservaId ? `/update_reserva/${reservaId}/` : "{% url 'criar_checkin' %}";
+      const method = reservaId ? 'PUT' : 'POST';
+
+      // Coletar dados do formulário
+      const formData = {
+        nome_completo: document.getElementById('nome_completo').value,
+        telefone: document.getElementById('telefone').value,
+        data_checkin: document.getElementById('data_checkin').value,
+        data_checkout: document.getElementById('data_checkout').value,
+        quarto: reservaId ? document.getElementById('quarto_hidden').value : document.getElementById('quarto').value,
+        cpf: document.getElementById('cpf').value,
+        email: document.getElementById('email').value,
+        observacoes: document.getElementById('observacoes').value
+      };
+
+      try {
+        // Enviar dados para o servidor
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Sucesso - fechar modal e recarregar página
+          alert(reservaId ? 'Check-in atualizado com sucesso!' : 'Check-in criado com sucesso!');
+          fecharModal();
+          window.location.reload();
+        } else {
+          // Erro - mostrar mensagem
+          alert(`Erro: ${data.message}`);
+        }
+      } catch (error) {
+        console.error('Erro ao processar solicitação:', error);
+        alert('Ocorreu um erro ao processar sua solicitação.');
+      }
+    });
+
+    // Buscar check-ins
+    searchInput.addEventListener('input', async (e) => {
+      const termo = e.target.value;
+
+      try {
+        const response = await fetch(`{% url 'buscar_checkins' %}?termo=${termo}`, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const data = await response.json();
+        const tableBody = document.getElementById('checkins-table-body');
+
+        // Limpar tabela
+        tableBody.innerHTML = '';
+
+        if (data.reservas.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="7" class="empty-table">Nenhum resultado encontrado</td></tr>';
+          return;
+        }
+
+        // Adicionar resultados à tabela
+        data.reservas.forEach(reserva => {
+          // Determinar a classe da data (vermelho, amarelo ou verde)
+          let dataClass = 'green';
+          const partesData = reserva.data_checkin.split('/');
+          const dataCheckin = new Date(partesData[2], partesData[1] - 1, partesData[0]);
+          const hoje = new Date();
+          hoje.setHours(0, 0, 0, 0);
+
+          if (dataCheckin < hoje) {
+            dataClass = 'red';
+          } else if (dataCheckin.getTime() === hoje.getTime()) {
+            dataClass = 'yellow';
+          }
+
+          tableBody.innerHTML += `
+            <tr>
+              <td class="${dataClass}">${reserva.data_checkin}${reserva.data_checkout ? '<br><small>Check-out: ' + reserva.data_checkout + '</small>' : ''}</td>
+              <td>${reserva.nome_completo}</td>
+              <td>${reserva.cpf || '-'}</td>
+              <td>${reserva.email || '-'}</td>
+              <td>${reserva.telefone}</td>
+              <td>${reserva.quarto}</td>
+              <td><button class="btn small blue consultar-btn" data-id="${reserva.id}"><i class="fas fa-edit"></i> Editar</button></td>
+            </tr>
+          `;
+        });
+      } catch (error) {
+        console.error('Erro ao buscar check-ins:', error);
+      }
+    });
+
+    // Máscara para CPF
+    document.getElementById('cpf').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 11) value = value.slice(0, 11);
+
+      if (value.length > 9) {
+        value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})$/, "$1.$2.$3-$4");
+      } else if (value.length > 6) {
+        value = value.replace(/^(\d{3})(\d{3})(\d{1,3})$/, "$1.$2.$3");
+      } else if (value.length > 3) {
+        value = value.replace(/^(\d{3})(\d{1,3})$/, "$1.$2");
+      }
+
+      e.target.value = value;
+    });
+
+    // Máscara para telefone
+    document.getElementById('telefone').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 11) value = value.slice(0, 11);
+
+      if (value.length > 10) {
+        value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+      } else if (value.length > 6) {
+        value = value.replace(/^(\d{2})(\d{4})(\d{1,4})$/, "($1) $2-$3");
+      } else if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d{1,5})$/, "($1) $2");
+      }
+
+      e.target.value = value;
+    });
+
+    // Exportar tabela para CSV
+    document.getElementById('export-table').addEventListener('click', function () {
+      const table = document.querySelector('.guest-table');
+      let csv = [];
+
+      // Cabeçalhos
+      const headers = [];
+      table.querySelectorAll('thead th').forEach(th => {
+        headers.push(th.textContent.trim());
+      });
+      csv.push(headers.join(','));
+
+      // Linhas de dados
+      table.querySelectorAll('tbody tr').forEach(tr => {
+        if (!tr.querySelector('.empty-table')) {
+          const row = [];
+          tr.querySelectorAll('td').forEach(td => {
+            // Remover HTML interno (como o ícone de edição)
+            const content = td.textContent.trim();
+            row.push('"' + content.replace(/\s+/g, ' ').trim() + '"');
+          });
+          csv.push(row.join(','));
+        }
+      });
+
+      // Download do CSV
+      const csvString = csv.join('\n');
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'checkins_easyhost.csv');
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Evento para download da tabela como PDF
+    document.getElementById('download-table').addEventListener('click', function () {
+      alert('Função para baixar a tabela como PDF será implementada em breve!');
+    });
+  </script>
+</body>
+
+</html>

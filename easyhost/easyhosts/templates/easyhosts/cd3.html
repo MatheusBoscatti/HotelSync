@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Finalizar Cadastro - Sistema Hoteleiro</title>
+  <link rel="stylesheet" href="{% static 'cad.css' %}">
+  <style>
+    .preview-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid #084F6D;
+    }
+
+    select {
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body class="login-body">
+  <div class="login-wrapper">
+    <div class="login-image">
+      <img src="fotop.png" alt="Imagem de fundo" />
+    </div>
+
+    <div class="login-container">
+      <div class="login-card">
+        <img src="logosemfundo2.png" alt="Logo da empresa" class="login-logo" />
+        <h2 class="login-title">Finalizar Cadastro</h2>
+        <p class="login-subtitle">Escolha uma foto e selecione um plano</p>
+
+        <form class="login-form" action="/concluir" method="POST" enctype="multipart/form-data">
+          <label for="foto">Foto de Perfil</label>
+          <input type="file" id="foto" name="foto" accept="image/*" onchange="previewImage(event)" required />
+          <img id="imagem-preview" class="preview-img" src="EASYHOST.png" alt="Prévia da imagem" />
+
+          <label for="plano">Plano</label>
+          <select id="plano" name="plano" required>
+            <option value="">Selecione um plano</option>
+            <option value="mensal">Mensal</option>
+            <option value="semestral">Semestral</option>
+            <option value="anual">Anual</option>
+          </select>
+<br>
+          <button type="submit" class="btn-login">Concluir Cadastro</button>
+        </form>
+
+        <div class="register-footer">
+          Já tem uma conta? <a href="login.html">Entrar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function previewImage(event) {
+      const preview = document.getElementById('imagem-preview');
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</body>
+</html>

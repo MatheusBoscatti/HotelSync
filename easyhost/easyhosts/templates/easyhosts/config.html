@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configurações | Easy Host</title>
+  <link rel="stylesheet" href="{% static 'config.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="profile">
+         <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+        <p class="name">{{ request.session.user_name }}</p>
+      </div>
+      <p class="menu-title">MENU PRINCIPAL</p>
+      <nav class="menu">
+        <ul>
+          <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+          <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+          <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li> 
+          <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+          <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+          <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+          <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+          <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+          <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+          <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li> 
+        </ul>
+      </nav>
+    </aside>
+
+<!-- Main Content -->
+<main class="main-content">
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="logo-container">
+      <img src="{% static 'images/logosemfundo2.png' %}" alt="EasyHost logo" class="logo" />
+      <span class="app-name">Easy Host</span>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span>Home</span> / <span class="current">Configurações</span>
+  </div>
+
+  <!-- Settings Form -->
+  <div class="settings-wrapper">
+    <form id="settingsForm">
+      <label for="username">Nome de Usuário:</label>
+      <input type="text" id="username" name="username" placeholder="Digite seu nome" required />
+
+      <label for="userPhoto">Foto do Usuário:</label>
+      <input type="file" id="userPhoto" name="userPhoto" accept="image/*" />
+      <div id="photoPreview" style="margin-top:10px;">
+        <!-- Preview da foto aparecerá aqui -->
+      </div>
+
+      <label for="theme">Tema do Sistema:</label>
+      <select id="theme" name="theme" required>
+        <option value="">Selecione o tema</option>
+        <option value="light">Claro</option>
+        <option value="dark">Escuro</option>
+      </select>
+
+      <label for="colorBlindMode">Modo para Daltônicos:</label>
+      <select id="colorBlindMode" name="colorBlindMode" required>
+        <option value="">Selecione a opção</option>
+        <option value="none">Nenhuma</option>
+        <option value="protanopia">Protanopia</option>
+        <option value="deuteranopia">Deuteranopia</option>
+        <option value="tritanopia">Tritanopia</option>
+      </select>
+
+      <button type="submit" class="btn blue">Salvar Configurações</button>
+    </form>
+  </div>
+</main>
+
+
+<script>
+  const userPhotoInput = document.getElementById('userPhoto');
+  const photoPreview = document.getElementById('photoPreview');
+
+  userPhotoInput.addEventListener('change', () => {
+    const file = userPhotoInput.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        photoPreview.innerHTML = `<img src="${e.target.result}" alt="Preview da foto" />`;
+      }
+      reader.readAsDataURL(file);
+    } else {
+      photoPreview.innerHTML = '';
+    }
+  });
+
+  // Exemplo simples para captura do submit do form
+  const settingsForm = document.getElementById('settingsForm');
+  settingsForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Configurações salvas (exemplo). Aqui você pode conectar com backend.');
+  });
+</script>
+
+</body>
+</html>

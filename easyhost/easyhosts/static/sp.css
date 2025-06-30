@@ -1,0 +1,355 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #d6d6d6;
+  }
+  
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background-color: #084F6D;
+    color: white;
+    padding: 20px 15px;
+  }
+  
+  .profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 20px;
+
+  }
+  
+  .avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid rgb(71, 238, 33);
+  }
+  
+  .name {
+    font-weight: bold;
+  }
+  
+  .menu-title {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    color: #cce;
+  }
+  
+  .menu ul {
+    list-style: none;
+  }
+  
+  .menu li {
+    padding: 12px 20px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .menu li i {
+    margin-right: 10px;
+    width: 20px;
+  }
+  
+  .menu li:hover {
+    background-color: #0e6386;
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Top Bar */
+  .topbar {
+    background-color: #f3f3f3;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .logo {
+    height: 32px;
+  }
+  
+  .app-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #084F6D; /* Azul consistente com a identidade visual */
+  }
+  
+  
+  .breadcrumb {
+    padding: 20px 30px 10px;
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .breadcrumb .current {
+    font-weight: bold;
+    color: #084F6D;
+  }
+  
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px 20px;
+  }
+  
+  .search-box {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 300px;
+  }
+  
+  .search-box i {
+    margin-right: 8px;
+    color: #666;
+  }
+  
+  .search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+  }
+  
+  /* botoes */
+  .btn {
+    background-color: #e5e5e5;
+    padding: 8px 14px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s ease-in-out;
+  }
+  
+  .btn:hover {
+    background-color: #d4d4d4;
+  }
+  
+  .btn.blue {
+    background-color: #084F6D;
+    color: white;
+  }
+  
+  .btn.blue:hover {
+    background-color: #063a50;
+  }
+  
+  /* tabela */
+  .table-wrapper {
+    background-color: white;
+    margin: 0 30px 30px;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .table-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .guest-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto;
+    border-radius: 6px;
+  }
+  
+  .guest-table thead {
+    background-color: #084F6D;
+    color: white;
+    text-align: left;
+  }
+  
+  .guest-table th,
+  .guest-table td {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .guest-table tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+  }
+  
+  /* Status cores */
+  .green {
+    color: green;
+  }
+  
+  .gray {
+    color: gray;
+  }
+  
+  .red {
+    color: red;
+  }
+
+
+  /* Suporte */
+.support-wrapper {
+  background-color: white;
+  margin: 0 30px 30px;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.support-wrapper h2 {
+  margin-bottom: 25px;
+  color: #084F6D;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.support-form .form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.support-form label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.support-form select,
+.support-form textarea {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+  transition: 0.2s ease-in-out;
+}
+
+.support-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* customizacao */
+.custom-file-upload {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+
+.upload-btn {
+  background-color: #084F6D;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.upload-btn i {
+  color: #fff;
+}
+
+.upload-btn span {
+  color: #fff;
+}
+
+
+.upload-btn:hover {
+  background-color: #063a50;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #555;
+  font-style: italic;
+}
+
+.support-form button {
+  margin-top: 10px;
+}
+
+
+  
+  /* tantativa de responsividade */
+  @media (max-width: 768px) {
+    .toolbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .table-actions {
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  
+    .search-box {
+      width: 100%;
+    }
+  }
+
+   .menu a {
+    color: white;
+    text-decoration: none;
+}
+  

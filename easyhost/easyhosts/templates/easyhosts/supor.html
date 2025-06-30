@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hóspedes | Easy Host</title>
+  <link rel="stylesheet" href="{% static 'sp.css' %}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- barra lateral -->
+    <aside class="sidebar">
+      <div class="profile">
+         <img src="{% static 'images/imagelogin.png' %}" alt="{{ request.session.user_name }}" class="avatar" />
+          <p class="name">{{ request.session.user_name }}</p>
+      </div>
+      <p class="menu-title">MENU PRINCIPAL</p>
+       <nav class="menu">
+        <ul>
+          <li><a href="{% url 'index' %}"><i class="fas fa-home"></i> Página Inicial</a></li>
+          <li><a href="{% url 'quartos' %}"><i class="fas fa-door-open"></i> Quartos</a></li>
+          <li><a href="{% url 'checkin' %}"><i class="fas fa-sign-in-alt"></i> Check-in</a></li> 
+          <li><a href="{% url 'exibir_graficos' %}"><i class="fas fa-chart-pie"></i> Gráficos</a></li>
+          <li><a href="{% url 'hospedes' %}"><i class="fas fa-user-friends"></i> Hóspedes</a></li>
+          <li><a href="{% url 'transfer' %}"><i class="fas fa-money-check-alt"></i> Transações</a></li>
+          <li><a href="{% url 'despes' %}"><i class="fas fa-wallet"></i> Despesas</a></li>
+          <li><a href="{% url 'relato' %}"><i class="fas fa-file-alt"></i> Relatorio</a></li>
+          <li><a href="{% url 'suporte' %}"><i class="fas fa-question-circle"></i> Suporte </a></li>
+          <li><a href="{% url 'configuracao' %}"><i class="fas fa-cog"></i> Configurações </a></li>
+          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out"></i> Sair do Sistema</a></li> 
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- parte de cima -->
+    <main class="main-content">
+      <!-- Top Bar -->
+     <header class="topbar">
+        <div class="logo-container">
+          <img src="{% static 'images/logosemfundo2.png' %}" alt="EasyHost logo" class="logo" />
+          <span class="app-name">Easy Host</span>
+        </div>
+      </header>
+
+      <!-- nome base pagina -->
+      <div class="breadcrumb">
+        <span>Home</span> / <span class="current">Suporte</span>
+      </div>
+
+      <!-- Suporte -->
+        <div class="support-wrapper">
+        <h2>Suporte ao Cliente</h2>
+        <form class="support-form">
+            <div class="form-group">
+            <label for="departamento">Selecionar Departamento:</label>
+            <select id="departamento" name="departamento" required>
+                <option value="">Selecione</option>
+                <option value="financeiro">Financeiro</option>
+                <option value="reservas">Reservas</option>
+                <option value="tecnico">Suporte Técnico</option>
+            </select>
+            </div>
+
+            <div class="form-group">
+            <label for="assunto">Selecionar Assunto:</label>
+            <select id="assunto" name="assunto" required>
+                <option value="">Selecione</option>
+                <option value="duvida">Dúvida</option>
+                <option value="problema">Problema Técnico</option>
+                <option value="elogio">Elogio</option>
+                <option value="reclamacao">Reclamação</option>
+            </select>
+            </div>
+
+            <div class="form-group">
+            <label for="mensagem">Mensagem:</label>
+            <textarea id="mensagem" name="mensagem" rows="5" placeholder="Digite sua mensagem..." required></textarea>
+            </div>
+
+            <div class="form-group">
+            <label for="arquivo">Adicionar Arquivo</label>
+            <div class="custom-file-upload">
+                <label class="upload-btn">
+                <i class="fas fa-upload"></i>
+                <span>Escolher Arquivo</span>
+                <input type="file" id="arquivo" name="arquivo">
+                </label>
+            </div>
+            </div>
+
+
+
+
+            <button type="submit" class="btn blue"><i class="fas fa-paper-plane"></i> Enviar</button>
+        </form>
+        </div>
+
+
+    </main>
+  </div>
+
+
+  </script>  
+</body>
+</html>
